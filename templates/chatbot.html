@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" dir=ltr>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>NeoDen Chatbot</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+        <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+    </head>
+
+    <body>
+
+        <div class="chatbot-icon" id="chatbot-icon" onclick="toggleChatbot()">  
+            <div class="tooltip-container">
+                <div class="chat-tooltip" id="chat-tooltip">
+                    <p class="tooltip-text">We are Online!<br>Help Center</p>
+                </div>
+            </div>
+        </div>  
+
+        <div class="chatbot-container" id="chatbot-container">  
+
+            <header class="chatbot-header" id="chatbot-header">
+                <span class="profile-image" id="profile-image"></span>
+                <h2 class="serive-tag" id="serive-tag">Chat with us now!</h2>
+                <span class="ctrl-button">                    
+                    <div class="minimize" id="minimize" onclick="toggleChatbot()"></div>            
+                </span>            
+            </header>
+
+            <div class="chatbot-body" id="chatbot-body"></div> 
+
+            <div class="chat-input" id="chat-input">
+                <textarea placeholder="Type your message and hit 'Enter'"required></textarea>                                                          
+                <span class="send-btn" id="send-btn"></span>
+            </div>   
+
+        </div>        
+
+    </body>
+    
+</html>
