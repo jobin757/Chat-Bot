@@ -53,13 +53,28 @@ body {
     animation: popupAnimation 0.5s ease-out;
 }
 
-@keyframes popupAnimation {
+/*@keyframes popupAnimation {
     from {
         transform: translateY(100px);
         opacity: 0;
     }
     to {
         transform: translateY(0);
+        opacity: 1;
+    }
+}*/
+
+@keyframes popupAnimation {
+    0% {
+        transform: translateY(0);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(300px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100px);
         opacity: 1;
     }
 }
@@ -124,6 +139,7 @@ body {
     border-radius: 8px;
     transition: transform 0.4s ease, opacity 0.4s ease;
     overflow: hidden;
+    opacity: 0;
 }
 
 .chatbot-container.open {
