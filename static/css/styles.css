@@ -146,13 +146,12 @@ body {
     bottom: 80px; right: 25px;
     width: 25px; height: 25px;
     justify-content: center; 
-    align-items: center; 
-    box-shadow: 2px 2px 5px rgb(0, 0, 0, 0.4);    
+    align-items: center;  
     z-index: 999;
 }
 
 .close-chat-button {
-    width: 20px; height: 20px;
+    width: 15px; height: 15px;
     border-radius: 50%;
     background-size: 101%;
     cursor: pointer;    
@@ -503,14 +502,14 @@ body {
 }
 
 .thinking-text {
+    margin-right: 4px;
     font-size: 0.8rem;
     display: inline-block;
 }
 
 .thinking-dot { 
-    margin: 0 2px; 
-    font-size: 0.3em;
-    font-weight: bolder;
+    margin: 0 1px; 
+    font-size: 0.6em;
 }
 
 /* "Do You Need Any Support?" yes/no */

@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 for (let i = 0; i < 3; i++) {
                     const dot = document.createElement('span');
                     dot.classList.add('thinking-dot');
-                    dot.textContent = 'o';
+                    dot.textContent = '●';
                     typingAnimation.appendChild(dot);
                 }
     
