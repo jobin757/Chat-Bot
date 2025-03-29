@@ -398,7 +398,7 @@ Welcome to your chat with NeoDen Bot!`,
             textArea.style.visibility = "visible";
             isChatStarted = true;
         }, 3000);
-    }  
+    }     
     
     function scrollToBottom() {
         chatBody.scrollTo(0, chatBody.scrollHeight);
