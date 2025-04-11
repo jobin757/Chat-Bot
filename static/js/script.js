@@ -436,6 +436,7 @@ Welcome to your chat with NeoDen Bot!`,
         chatbotContainer.appendChild(closeChatContainer);
     
         closeChatButton.addEventListener("click", function () {
+            closeChatButton.style.visibility = "hidden";
             const dialogBox = document.createElement('div');
             dialogBox.classList.add('dialog-box');
     
@@ -447,6 +448,7 @@ Welcome to your chat with NeoDen Bot!`,
             noButton.textContent = 'No';
             noButton.classList.add('no-btn');
             noButton.addEventListener('click', function () {
+                closeChatButton.style.visibility = "visible";
                 chatbotContainer.removeChild(dialogBox);
             });
             dialogBox.appendChild(noButton);
@@ -455,7 +457,7 @@ Welcome to your chat with NeoDen Bot!`,
             yesButton.textContent = 'Yes';
             yesButton.classList.add('yes-btn');
             yesButton.addEventListener('click', function () {
-                closeChatContainer.style.visibility = "hidden";
+                closeChatButton.enabled;                
                 shutdownChatBot();
                 chatbotContainer.removeChild(dialogBox);
             });

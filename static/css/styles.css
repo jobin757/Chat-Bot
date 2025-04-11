@@ -146,14 +146,14 @@ body {
     bottom: 80px; right: 25px;
     width: 25px; height: 25px;
     justify-content: center; 
-    align-items: center;  
+    align-items: center; 
     z-index: 999;
 }
 
 .close-chat-button {
     width: 15px; height: 15px;
     border-radius: 50%;
-    background-size: 101%;
+    background-size: 105%;  
     cursor: pointer;    
     background-color: rgb(68, 68, 68); 
     background-image: var(--shutdown-icon);  
@@ -165,7 +165,7 @@ body {
 }
 
 .close-chat-button:hover {
-    background-color: rgb(1, 134, 201); 
+    background-color: red; 
 }
 
 /* chatbot header settings */
