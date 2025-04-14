@@ -225,8 +225,8 @@ body {
 /* chatbot body settings */
 .chatbot-body { 
     position: fixed;
-    bottom: 70px; right: 0;
-    height: 400px; width: 400px;
+    bottom: 65px; right: 0;
+    height: 405px; width: 400px;
     overflow-y: auto;    
     scrollbar-width: thin;
     border-radius: 4px 4px 0 0;
@@ -429,7 +429,7 @@ body {
     outline: none;
     resize: none;
     font-size: 0.8rem;    
-    padding: 6px 15px 7px 15px;
+    padding: 7px 15px 7px 15px;
     line-height: 1.5;
     overflow-y: hidden;
     scrollbar-width: thin;
