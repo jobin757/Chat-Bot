@@ -1,0 +1,13 @@
+{
+    "casual_greetings": 2,
+    "morning_greetings": 9,
+    "afternoon_greetings": 0,
+    "evening_greetings": 7,
+    "conversational_greetings": 5,
+    "endings": 6,
+    "gratitude": 8,
+    "apologies": 1,
+    "positive_feedback": 10,
+    "company_information": 3,
+    "company_profiles": 4
+}
