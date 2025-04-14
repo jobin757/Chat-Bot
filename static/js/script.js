@@ -472,3 +472,496 @@ Welcome to your chat with NeoDen Bot!`,
     window.toggleChatbot = toggleChatbot;
     
 });
+/*document.addEventListener("DOMContentLoaded", () => {
+    // DOM Elements
+    const elements = {
+        chatbotContainer: document.getElementById("chatbot-container"),
+        chatbotIcon: document.getElementById("chatbot-icon"),
+        chatBody: document.getElementById('chatbot-body'),
+        sendButton: document.getElementById("send-btn"),
+        textArea: document.querySelector("#chat-input textarea"),
+        chatHeader: document.getElementById("chatbot-header"),
+        headerTextContainer: document.querySelector(".serive-tag"),
+    };
+
+    // Audio elements
+    const audio = {
+        bot: new Audio("./static/audios/bot.mp3"),
+        user: new Audio("./static/audios/user.mp3")
+    };
+
+    // Constants
+    const constants = {
+        maxTextAreaHeight: 100,
+        inputInitHeight: elements.textArea.scrollHeight,
+        typingDelay: 2000,
+        messageDelay: 1000
+    };
+
+    // State management
+    const state = {
+        isChatStarted: false,
+        isWelcomeRun: false,
+        isDragging: false,
+        dragOffset: { x: 0, y: 0 }
+    };
+
+    // Initialize chatbot
+    elements.chatbotContainer.classList.add("close");
+
+    // Event Listeners
+    function setupEventListeners() {
+        // Chat toggle
+        elements.chatbotIcon.addEventListener("click", toggleChatbot);
+        
+        // Drag functionality
+        elements.chatHeader.addEventListener("mousedown", startDrag);
+        
+        // Message input
+        elements.textArea.addEventListener('keydown', handleKeyDown);
+        elements.textArea.addEventListener("input", handleTextAreaInput);
+        
+        // Send button
+        elements.sendButton.addEventListener("click", sendMessage);
+    }
+
+    // Core Functions
+    function toggleChatbot() {
+        elements.chatbotContainer.classList.toggle("open");
+        elements.chatbotContainer.classList.toggle("close");
+        elements.chatbotIcon.style.display = elements.chatbotContainer.classList.contains("open") ? "none" : "flex";
+
+        if (elements.chatbotContainer.classList.contains("open") && !state.isChatStarted) {
+            if (!state.isWelcomeRun) {
+                state.isWelcomeRun = true;
+                showWelcomeMessage();
+            }
+        }
+    }
+
+    function startDrag(e) {
+        e.preventDefault();
+        const rect = elements.chatbotContainer.getBoundingClientRect();
+        state.dragOffset = {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
+        state.isDragging = true;
+        
+        document.addEventListener("mousemove", handleDrag);
+        document.addEventListener("mouseup", stopDrag);
+    }
+
+    function handleDrag(e) {
+        if (!state.isDragging) return;
+        
+        const viewport = {
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+        
+        const chatDimensions = {
+            width: elements.chatbotContainer.offsetWidth,
+            height: elements.chatbotContainer.offsetHeight
+        };
+        
+        let left = Math.max(0, Math.min(e.clientX - state.dragOffset.x, viewport.width - chatDimensions.width));
+        let top = Math.max(0, Math.min(e.clientY - state.dragOffset.y, viewport.height - chatDimensions.height));
+        
+        elements.chatbotContainer.style.left = `${left}px`;
+        elements.chatbotContainer.style.top = `${top}px`;
+    }
+
+    function stopDrag() {
+        state.isDragging = false;
+        document.removeEventListener("mousemove", handleDrag);
+        document.removeEventListener("mouseup", stopDrag);
+    }
+
+    function addMessage(content, options = {}) {
+        const {
+            isBot = false,
+            hasTimestamp = false,
+            isFirstMessage = false,
+            isThink = false
+        } = options;
+        
+        const messageContainer = document.createElement('div');
+        messageContainer.className = 'message';
+        messageContainer.id = isBot ? 'bot-message' : 'user-message';
+        
+        const messageTypeDiv = document.createElement('div');
+        messageTypeDiv.className = `${isFirstMessage ? 'message-first' : 'message-next'} ${isBot ? 'bot' : 'user'}`;
+        messageTypeDiv.id = isFirstMessage 
+            ? (isBot ? 'message-first-bot' : 'message-first-user')
+            : (isBot ? 'message-next-bot' : 'message-next-user');
+        
+        const icon = document.createElement('span');
+        icon.className = 'icon';
+        icon.id = isFirstMessage ? (isBot ? 'bot-icon' : 'user-icon') : 'empty-icon';
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = isFirstMessage ? 'first' : 'next';
+        messageDiv.id = isFirstMessage ? 'first-bot-message' : 'next-bot-message';
+        
+        const contentElement = document.createElement('p');
+        contentElement.className = isBot ? 'bot-content' : 'user-content';
+        
+        if (hasTimestamp) {
+            const timestamp = document.createElement('p');
+            timestamp.className = 'timestamp';
+            timestamp.textContent = new Date().toLocaleTimeString().toUpperCase();
+            contentElement.appendChild(timestamp);
+        }
+        
+        if (isBot) {
+            messageTypeDiv.appendChild(icon);
+            
+            if (isThink) {
+                contentElement.textContent = content;
+                messageDiv.appendChild(contentElement);
+                messageTypeDiv.appendChild(messageDiv);
+                audio.bot.play();
+            } else {
+                createTypingAnimation(messageDiv, contentElement, content);
+                messageTypeDiv.appendChild(messageDiv);
+                
+                setTimeout(() => {
+                    messageDiv.innerHTML = '';
+                    contentElement.textContent = content;
+                    messageDiv.appendChild(contentElement);
+                    audio.bot.play();
+                }, constants.typingDelay);
+            }
+        } else {
+            contentElement.textContent = content;
+            messageDiv.appendChild(contentElement);
+            messageTypeDiv.appendChild(messageDiv);
+            messageTypeDiv.appendChild(icon);
+            audio.user.play();
+        }
+        
+        messageContainer.appendChild(messageTypeDiv);
+        elements.chatBody.appendChild(messageContainer);
+        scrollToBottom();
+    }
+
+    function createTypingAnimation(container, contentElement, finalContent) {
+        const typingAnimation = document.createElement('span');
+        typingAnimation.className = 'typing-animation';
+        
+        const thinkingText = document.createElement('p');
+        thinkingText.className = 'thinking-text';
+        thinkingText.textContent = 'Thinking';
+        
+        for (let i = 0; i < 3; i++) {
+            const dot = document.createElement('span');
+            dot.className = 'thinking-dot';
+            dot.textContent = '●';
+            typingAnimation.appendChild(dot);
+        }
+        
+        contentElement.appendChild(thinkingText);
+        contentElement.appendChild(typingAnimation);
+        container.appendChild(contentElement);
+    }
+
+    function sendMessage() {
+        if (!state.isChatStarted) return;
+        
+        const content = elements.textArea.value.trim();
+        if (!content) return;
+        
+        addMessage(content, { isBot: false, hasTimestamp: true, isFirstMessage: true });
+        addMessage(content, { isBot: true, hasTimestamp: true, isFirstMessage: true });
+        
+        // Reset textarea
+        elements.textArea.value = '';
+        elements.textArea.style.height = `${constants.inputInitHeight}px`;
+        elements.textArea.style.transform = "translateY(0px)";
+        elements.textArea.style.overflowY = "hidden";
+    }
+
+    function handleKeyDown(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function handleTextAreaInput() {
+        elements.textArea.style.height = `${constants.inputInitHeight}px`;
+        const newHeight = Math.min(elements.textArea.scrollHeight, constants.maxTextAreaHeight);
+        const heightDifference = newHeight - constants.inputInitHeight;
+        
+        elements.textArea.style.transform = heightDifference > 0 
+            ? `translateY(-${heightDifference / 2}px)` 
+            : "translateY(0px)";
+            
+        elements.textArea.style.height = heightDifference > 0 
+            ? `${newHeight}px` 
+            : `${constants.inputInitHeight}px`;
+            
+        elements.textArea.style.overflowY = newHeight === constants.maxTextAreaHeight 
+            ? "auto" 
+            : "hidden";
+    }
+
+    function showWelcomeMessage() {
+        elements.chatBody.innerHTML = "";
+        elements.textArea.style.visibility = "hidden";
+        
+        const messages = [
+            "Welcome to Neoden India!",
+            "Is there anything we can assist you with?"
+        ];
+        
+        messages.forEach((message, index) => {
+            setTimeout(() => {
+                addMessage(message, { 
+                    isBot: true, 
+                    isFirstMessage: index === 0, 
+                    isThink: true 
+                });
+            }, constants.messageDelay * index);
+        });
+        
+        setTimeout(showSupportOptions, constants.messageDelay * messages.length + 500);
+    }
+
+    function showSupportOptions() {
+        const buttonContainer = document.createElement("div");
+        buttonContainer.className = "button-container";
+        
+        const buttons = [
+            { text: "Yes", action: showForm },
+            { text: "No", action: shutdownChatBot }
+        ];
+        
+        buttons.forEach(button => {
+            const btn = document.createElement("button");
+            btn.textContent = button.text;
+            btn.addEventListener("click", button.action);
+            buttonContainer.appendChild(btn);
+        });
+        
+        elements.chatBody.appendChild(buttonContainer);
+    }
+
+    function startNewChat() {
+        elements.chatBody.innerHTML = '';
+        
+        const newChatContainer = document.createElement("div");
+        newChatContainer.className = "newChatContainer";
+        
+        const startChatContent = document.createElement("span");
+        startChatContent.className = "newChatContent";
+        startChatContent.textContent = "Start New Chat";
+        
+        const startChatButton = document.createElement("span");
+        startChatButton.className = "newChatButton";
+        startChatButton.addEventListener("click", showForm);
+        
+        newChatContainer.append(startChatContent, startChatButton);
+        elements.chatBody.appendChild(newChatContainer);
+    }
+
+    function showForm() {
+        elements.chatBody.innerHTML = '';
+        
+        const formContainer = document.createElement("div");
+        formContainer.className = "form-container";
+        formContainer.innerHTML = `  
+            <div class="error-message-container" id="error-message"></div>          
+            <input type="text" id="name" required placeholder="Enter your Name"> 
+            <input type="text" id="contact" required placeholder="Enter your Contact Number">
+            <input type="email" id="email" required placeholder="Enter your email">
+            <input type="text" id="company" required placeholder="Enter your Company Name"> 
+            <select id="service">
+                <option value="" selected>Choose Your Service</option>
+                <option value="Sales & Enquiry">Sales & Enquiry</option>
+                <option value="Spares & Services">Spares & Services</option>
+                <option value="Technical Support">Technical Support</option>
+            </select>
+            <div class="clear-cancel-continue-container">
+                <button class="clear-btn">Clear</button>
+                <button class="cancel-btn">Cancel</button>
+                <button class="continue-btn" disabled>Continue</button>
+            </div>`;
+        
+        elements.chatBody.appendChild(formContainer);
+        
+        // Form event listeners
+        document.querySelectorAll("input, select").forEach(input => {
+            input.addEventListener("input", validateFields);
+        });
+        
+        document.querySelector(".cancel-btn").addEventListener("click", shutdownChatBot);
+        document.querySelector(".clear-btn").addEventListener("click", clearForm);
+        document.querySelector(".continue-btn").addEventListener("click", handleFormSubmit);
+    }
+
+    function validateFields() {
+        const formData = {
+            name: document.getElementById("name").value.trim(),
+            contact: document.getElementById("contact").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            company: document.getElementById("company").value.trim(),
+            service: document.getElementById("service").value
+        };
+        
+        const continueBtn = document.querySelector(".continue-btn");
+        const errorMessage = document.getElementById("error-message");
+        
+        const validation = validateFormData(formData);
+        
+        if (validation.isValid) {
+            hideErrorMessage(errorMessage);
+        } else {
+            showErrorMessage(errorMessage, validation.message);
+        }
+        
+        continueBtn.disabled = !validation.isValid;
+    }
+
+    function validateFormData(formData) {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const namePattern = /^[A-Za-z\s]+$/;
+        const contactPattern = /^[0-9+-]+$/;
+        
+        if (!namePattern.test(formData.name)) {
+            return { isValid: false, message: "Please enter a valid Name" };
+        }
+        
+        if (!contactPattern.test(formData.contact)) {
+            return { isValid: false, message: "Invalid Contact Number" };
+        }
+        
+        if (!emailPattern.test(formData.email)) {
+            return { isValid: false, message: "Invalid Email Address" };
+        }
+        
+        if (!formData.name || !formData.contact || !formData.email || !formData.company || !formData.service) {
+            return { isValid: false, message: "The required fields cannot be left empty" };
+        }
+        
+        return { isValid: true };
+    }
+
+    function showErrorMessage(element, message) {
+        element.textContent = message;
+        element.style.display = "block";
+        
+        element.classList.remove("slide-up", "slide-down");
+        void element.offsetWidth; // Trigger reflow
+        
+        element.classList.add("slide-down");
+        
+        setTimeout(() => {
+            element.classList.replace("slide-down", "slide-up");
+            setTimeout(() => element.style.display = "none", 300);
+        }, 3000);
+    }
+
+    function hideErrorMessage(element) {
+        element.classList.add("slide-up");
+        setTimeout(() => {
+            element.style.display = "none";
+            element.classList.remove("slide-up");
+        }, 300);
+    }
+
+    function clearForm() {
+        ['name', 'contact', 'email', 'company', 'service'].forEach(id => {
+            document.getElementById(id).value = "";
+        });
+        
+        const errorMessage = document.getElementById("error-message");
+        errorMessage.textContent = "";
+        errorMessage.style.display = "none";
+        
+        document.querySelector(".continue-btn").disabled = true;
+    }
+
+    function handleFormSubmit() {
+        const name = document.getElementById("name").value.trim();
+        const service = document.getElementById("service").value.trim();
+        
+        elements.chatBody.innerHTML = "";
+        elements.headerTextContainer.textContent = service;
+        
+        addMessage(
+            `Thank you, ${name}, for your valuable insights! Your input is deeply appreciated and helps us greatly. 
+            
+I'm thrilled to assist you further. 
+            
+Welcome to your chat with NeoDen Bot!`, 
+            { isBot: true, isFirstMessage: true, isThink: true }
+        );
+        
+        setTimeout(() => {
+            setupCloseChatButton();
+            elements.textArea.style.visibility = "visible";
+            state.isChatStarted = true;
+        }, 3000);
+    }
+
+    function setupCloseChatButton() {
+        const closeChatContainer = document.createElement("div");
+        closeChatContainer.className = "closechat";
+        
+        const closeChatButton = document.createElement("span");
+        closeChatButton.className = "close-chat-button";
+        closeChatButton.addEventListener("click", showExitConfirmation);
+        
+        closeChatContainer.appendChild(closeChatButton);
+        elements.chatbotContainer.appendChild(closeChatContainer);
+    }
+
+    function showExitConfirmation() {
+        const dialogBox = document.createElement('div');
+        dialogBox.className = 'dialog-box';
+        
+        dialogBox.innerHTML = `
+            <p>Do you want to Quit the chat?</p>
+            <button class="no-btn">No</button>
+            <button class="yes-btn">Yes</button>
+        `;
+        
+        dialogBox.querySelector('.no-btn').addEventListener('click', () => {
+            elements.chatbotContainer.removeChild(dialogBox);
+        });
+        
+        dialogBox.querySelector('.yes-btn').addEventListener('click', () => {
+            shutdownChatBot();
+            elements.chatbotContainer.removeChild(dialogBox);
+        });
+        
+        elements.chatbotContainer.appendChild(dialogBox);
+    }
+
+    function shutdownChatBot() {
+        elements.textArea.style.visibility = "hidden";
+        state.isChatStarted = false;
+        elements.chatBody.innerHTML = "";
+        elements.headerTextContainer.textContent = "Chat with us now!";
+        
+        addMessage(
+            "The chat has been closed or canceled by the user. Thank You!", 
+            { isBot: true, isThink: true }
+        );
+        
+        setTimeout(() => {
+            elements.chatBody.innerHTML = "";
+            startNewChat();
+        }, 3000);
+    }
+
+    function scrollToBottom() {
+        elements.chatBody.scrollTo(0, elements.chatBody.scrollHeight);
+    }
+
+    // Initialize
+    setupEventListeners();
+    window.toggleChatbot = toggleChatbot;
+});*/
